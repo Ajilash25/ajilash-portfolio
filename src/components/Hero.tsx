@@ -41,15 +41,27 @@ export default function Hero() {
     return () => clearTimeout(timer);
   }, [displayedText, isDeleting, roleIndex]);
 
-  // Generate background particles
-  const particles = Array.from({ length: 25 }).map((_, i) => ({
-    id: i,
-    size: Math.random() * 6 + 2,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    duration: Math.random() * 10 + 10,
-    delay: Math.random() * -20,
-  }));
+  // Generate background particles on mount to prevent SSR hydration mismatch
+  const [particles, setParticles] = useState<{
+    id: number;
+    size: number;
+    x: number;
+    y: number;
+    duration: number;
+    delay: number;
+  }[]>([]);
+
+  useEffect(() => {
+    const generated = Array.from({ length: 25 }).map((_, i) => ({
+      id: i,
+      size: Math.random() * 6 + 2,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      duration: Math.random() * 10 + 10,
+      delay: Math.random() * -20,
+    }));
+    setParticles(generated);
+  }, []);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-16">
